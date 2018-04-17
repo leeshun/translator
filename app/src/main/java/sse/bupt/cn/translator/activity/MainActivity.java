@@ -1,7 +1,9 @@
-package sse.bupt.cn.translator;
+package sse.bupt.cn.translator.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import sse.bupt.cn.translator.R;
 
 public class MainActivity extends AppCompatActivity {
 
