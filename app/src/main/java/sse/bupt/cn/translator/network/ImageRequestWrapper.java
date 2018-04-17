@@ -53,12 +53,12 @@ public class ImageRequestWrapper {
         this.maxHeight = maxHeight;
     }
 
-    public void imageRequest(String url, ImageView.ScaleType scaleType, Bitmap.Config config, ImageRequestHandler handler) {
-        ImageSuccessHandler successHandler = new ImageSuccessHandler(handler);
+    public void imageRequest(String name, String url, ImageView.ScaleType scaleType, Bitmap.Config config, ImageRequestHandler handler) {
+        ImageSuccessHandler successHandler = new ImageSuccessHandler(handler, name);
         ImageFailHandler failHandler = new ImageFailHandler(handler);
 
-        Log.i(TAG, "--- request url is " + url + "---" );
-        ImageRequest request = new ImageRequest(url,successHandler,maxWidth,maxHeight,scaleType,config,failHandler);
+        Log.i(TAG, "--- request url is " + url + "---");
+        ImageRequest request = new ImageRequest(url, successHandler, maxWidth, maxHeight, scaleType, config, failHandler);
 
         queue.add(request);
     }
