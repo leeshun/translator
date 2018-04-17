@@ -1,6 +1,7 @@
 package sse.bupt.cn.translator.responsehandler;
 
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.android.volley.VolleyError;
@@ -12,8 +13,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import sse.bupt.cn.translator.constants.MessageType;
 import sse.bupt.cn.translator.model.Text;
 import sse.bupt.cn.translator.network.handler.StringRequestHandler;
+import sse.bupt.cn.translator.util.MessageFactory;
 
 public class TextHandler implements StringRequestHandler {
     private static final String TAG = "TextHandler";
@@ -31,7 +34,8 @@ public class TextHandler implements StringRequestHandler {
             root = new JSONObject(response);
         } catch (JSONException e) {
             Log.i(TAG, "---json parse error---");
-            //TODO(leeshun) add json parse error message
+            Message message = MessageFactory.getMessage(MessageType.TEXT_RESPONSE_DO_NOT_CONTAIN_JSON_OBJECT, e.getMessage());
+            handler.sendMessage(message);
             return;
         }
 
@@ -40,7 +44,7 @@ public class TextHandler implements StringRequestHandler {
             List<Text> texts = new ArrayList<>();
             int size = values.length();
             JSONObject object;
-            for (int index = 0;index < size;index++) {
+            for (int index = 0; index < size; index++) {
                 object = values.getJSONObject(index);
                 Text text = new Text();
                 text.setParaId(Integer.parseInt(object.getString("id")));
@@ -49,16 +53,20 @@ public class TextHandler implements StringRequestHandler {
                 text.setChineseText(object.getString("chinese"));
                 texts.add(text);
             }
-            //TODO(leeshun) dispatch this list to main activity
+            Message message = MessageFactory.getMessage(MessageType.TEXT_RESPONSE_SUCCESS);
+            message.obj = texts;
+            handler.sendMessage(message);
         } catch (JSONException e) {
             Log.i(TAG, "---json don't contain menu key---");
-            //TODO(leeshun) add json don't contain menu key
+            Message message = MessageFactory.getMessage(MessageType.TEXT_RESPONSE_PARSE_ERROR, e.getMessage());
+            handler.sendMessage(message);
             return;
         }
     }
 
     @Override
     public void onFail(VolleyError error) {
-
+        Message message = MessageFactory.getMessage(MessageType.TEXT_REQUEST_INTERNET_ERROR, error.getMessage());
+        handler.sendMessage(message);
     }
 }

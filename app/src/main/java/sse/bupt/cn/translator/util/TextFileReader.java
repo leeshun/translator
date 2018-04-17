@@ -1,6 +1,7 @@
 package sse.bupt.cn.translator.util;
 
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import java.io.FileInputStream;
@@ -10,6 +11,7 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import sse.bupt.cn.translator.constants.MessageType;
 import sse.bupt.cn.translator.model.Text;
 
 public class TextFileReader implements Runnable {
@@ -36,9 +38,12 @@ public class TextFileReader implements Runnable {
         try {
             in = new ObjectInputStream(new FileInputStream(path));
             Text text;
-            while ((text = (Text)in.readObject()) != null) {
+            while ((text = (Text) in.readObject()) != null) {
                 texts.add(text);
             }
+            Message message = MessageFactory.getMessage(MessageType.TEXT_READ_SUCCESS);
+            message.obj = texts;
+            handler.sendMessage(message);
         } catch (IOException e) {
             Log.i(TAG, "---read path error---");
             //TODO(leeshun) dispatch this error to activity

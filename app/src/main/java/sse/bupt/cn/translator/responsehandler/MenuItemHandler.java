@@ -1,6 +1,7 @@
 package sse.bupt.cn.translator.responsehandler;
 
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.android.volley.VolleyError;
@@ -13,8 +14,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import sse.bupt.cn.translator.constants.MessageType;
 import sse.bupt.cn.translator.model.MenuItem;
 import sse.bupt.cn.translator.network.handler.StringRequestHandler;
+import sse.bupt.cn.translator.util.MessageFactory;
 
 public class MenuItemHandler implements StringRequestHandler {
     private static final String TAG = "MenuItemHandler";
@@ -32,23 +35,26 @@ public class MenuItemHandler implements StringRequestHandler {
             root = new JSONObject(response);
         } catch (JSONException e) {
             Log.i(TAG, "---json parse error---");
-            //TODO(leeshun) add json parse error message
+            Message message = MessageFactory.getMessage(MessageType.MENU_RESPONSE_DO_NOT_CONTAIN_JSON_OBJECT, e.getMessage());
+            handler.sendMessage(message);
             return;
         }
         try {
             JSONArray values = root.getJSONArray("menu");
             List<MenuItem> items = new ArrayList<>();
-            int size =values.length();
-            for (int index = 0; index < size;index++) {
+            int size = values.length();
+            for (int index = 0; index < size; index++) {
                 MenuItem item = new MenuItem();
                 item.setMenuName(values.getString(index));
                 items.add(item);
             }
-
-            //TODO(leeshun) dispatch this list to main activity
+            Message message = MessageFactory.getMessage(MessageType.MENU_RESPONSE_SUCCESS);
+            message.obj = items;
+            handler.sendMessage(message);
         } catch (JSONException e) {
             Log.i(TAG, "---json don't contain menu key---");
-            //TODO(leeshun) add json don't contain menu key
+            Message message = MessageFactory.getMessage(MessageType.MENU_RESPONSE_PARSE_ERROR);
+            handler.sendMessage(message);
             return;
         }
     }
@@ -56,6 +62,7 @@ public class MenuItemHandler implements StringRequestHandler {
     @Override
     public void onFail(VolleyError error) {
         Log.i(TAG, "---" + error.getMessage() + "---");
-        //TODO(leeshun) handle the error message
+        Message message = MessageFactory.getMessage(MessageType.MENU_REQUEST_INTERNET_ERROR, error.getMessage());
+        handler.sendMessage(message);
     }
 }
