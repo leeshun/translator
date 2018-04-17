@@ -22,8 +22,6 @@ public class SendChineseHandler implements StringRequestHandler {
             //TODO
         } else if (response.toLowerCase().equals("false")) {
             //TODO
-        } else {
-            //TODO
         }
     }
 
