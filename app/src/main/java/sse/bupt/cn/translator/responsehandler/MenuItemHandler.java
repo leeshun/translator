@@ -40,7 +40,7 @@ public class MenuItemHandler implements StringRequestHandler {
             return;
         }
         try {
-            JSONArray values = root.getJSONArray("menu");
+            JSONArray values = root.getJSONArray("items");
             List<MenuItem> items = new ArrayList<>();
             int size = values.length();
             for (int index = 0; index < size; index++) {

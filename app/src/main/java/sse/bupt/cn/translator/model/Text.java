@@ -13,8 +13,13 @@ public class Text implements Serializable {
 
     private boolean isOnlyText;
 
+    private boolean isLocate;
+
+    private String pitcureLocalPath;
+
     public Text() {
         isOnlyText = false;
+        isLocate = false;
     }
 
     public Text(int paraId, String pictureUrl, String englishText, String chineseText, boolean isOnlyText) {
@@ -23,6 +28,7 @@ public class Text implements Serializable {
         this.englishText = englishText;
         this.chineseText = chineseText;
         this.isOnlyText = isOnlyText;
+        isLocate = false;
     }
 
     public int getParaId() {
@@ -66,5 +72,21 @@ public class Text implements Serializable {
 
     public static String makePara(String value) {
         return "  " + value;
+    }
+
+    public boolean isLocate() {
+        return isLocate;
+    }
+
+    public void setLocate(boolean locate) {
+        isLocate = locate;
+    }
+
+    public String getPitcureLocalPath() {
+        return pitcureLocalPath;
+    }
+
+    public void setPitcureLocalPath(String pitcureLocalPath) {
+        this.pitcureLocalPath = pitcureLocalPath;
     }
 }

@@ -74,7 +74,6 @@ public class MenuItem implements Comparable<MenuItem> {
         }
     }
 
-
     @Override
     public int compareTo(@NonNull MenuItem o) {
         if (this.lastViewTime.before(o.lastViewTime)) {
@@ -84,5 +83,15 @@ public class MenuItem implements Comparable<MenuItem> {
         } else {
             return 0;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "MenuItem{" +
+                "menuName='" + menuName + '\'' +
+                ", path='" + path + '\'' +
+                ", lastViewPages=" + lastViewPages +
+                ", lastViewTime=" + lastViewTime +
+                '}';
     }
 }
