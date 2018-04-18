@@ -63,4 +63,8 @@ public class Text implements Serializable {
     public boolean isOnlyText() {
         return isOnlyText;
     }
+
+    public static String makePara(String value) {
+        return "  " + value;
+    }
 }
