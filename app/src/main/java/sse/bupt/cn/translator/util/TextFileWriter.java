@@ -1,5 +1,7 @@
 package sse.bupt.cn.translator.util;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import java.io.FileNotFoundException;
@@ -9,6 +11,7 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
+import sse.bupt.cn.translator.constants.MessageType;
 import sse.bupt.cn.translator.model.Text;
 
 public class TextFileWriter implements Runnable {
@@ -18,9 +21,12 @@ public class TextFileWriter implements Runnable {
 
     private List<Text> texts;
 
-    public TextFileWriter(String path, List<Text> texts) {
+    private Handler handler;
+
+    public TextFileWriter(String path, List<Text> texts, Handler handler) {
         this.path = path;
         this.texts = texts;
+        this.handler = handler;
     }
 
     public void start() {
@@ -42,10 +48,16 @@ public class TextFileWriter implements Runnable {
             }
             out.flush();
             out.close();
+            Message message = MessageFactory.getMessage(MessageType.TEXT_WRITE_SUCCESS);
+            handler.sendMessage(message);
         } catch (FileNotFoundException e) {
             Log.i(TAG, "---file:" + path + "not found---");
+            Message message = MessageFactory.getMessage(MessageType.TEXT_FILE_WRITE_ERROR);
+            handler.sendMessage(message);
         } catch (IOException e) {
             Log.i(TAG, "---write path error---");
+            Message message = MessageFactory.getMessage(MessageType.TEXT_CLASS_NOT_FOUND);
+            handler.sendMessage(message);
         }
     }
 }

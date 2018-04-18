@@ -46,9 +46,12 @@ public class TextFileReader implements Runnable {
             handler.sendMessage(message);
         } catch (IOException e) {
             Log.i(TAG, "---read path error---");
-            //TODO(leeshun) dispatch this error to activity
+            Message message = MessageFactory.getMessage(MessageType.TEXT_FILE_READ_ERROR,e.getMessage());
+            handler.sendMessage(message);
         } catch (ClassNotFoundException e) {
             Log.i(TAG, "---class not found---");
+            Message message = MessageFactory.getMessage(MessageType.TEXT_CLASS_NOT_FOUND,e.getMessage());
+            handler.sendMessage(message);
         }
     }
 }
