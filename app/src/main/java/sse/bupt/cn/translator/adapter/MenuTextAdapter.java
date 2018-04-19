@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import sse.bupt.cn.translator.R;
 import sse.bupt.cn.translator.model.MenuItem;
 
 public class MenuTextAdapter extends BaseAdapter {
@@ -48,13 +49,26 @@ public class MenuTextAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        MenuItemHolder holder = null;
+        MenuItemHolder holder;
         if (convertView == null) {
+            holder = new MenuItemHolder();
+            convertView = LayoutInflater.from(context).
+                    inflate(R.layout.menu_items, parent, false);
 
+            holder.imageView = (ImageView) convertView.findViewById(R.id.imageView);
+            holder.textView = (TextView) convertView.findViewById(R.id.textView);
+            convertView.setTag(holder);
         } else {
             holder = (MenuItemHolder) convertView.getTag();
         }
+
+        holder.textView.setText(items.get(position).getMenuName());
+
         return convertView;
+    }
+
+    public void filter(String filter) {
+        notifyDataSetChanged();
     }
 
     private class MenuItemHolder {
