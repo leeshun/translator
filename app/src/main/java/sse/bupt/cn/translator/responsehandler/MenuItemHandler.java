@@ -45,7 +45,7 @@ public class MenuItemHandler implements StringRequestHandler {
             int size = values.length();
             for (int index = 0; index < size; index++) {
                 MenuItem item = new MenuItem();
-                item.setMenuName(values.getString(index));
+                item.setMenuName(values.getJSONObject(index).getString("articleName"));
                 items.add(item);
             }
             Message message = MessageFactory.getMessage(MessageType.MENU_RESPONSE_SUCCESS);
