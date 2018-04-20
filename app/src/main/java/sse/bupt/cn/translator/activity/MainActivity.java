@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ListView;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,7 @@ import sse.bupt.cn.translator.model.MenuItem;
 import sse.bupt.cn.translator.network.StringRequestWrapper;
 import sse.bupt.cn.translator.responsehandler.MenuItemHandler;
 import sse.bupt.cn.translator.util.MenuPreferenceReader;
+import sse.bupt.cn.translator.util.MenuPreferenceWriter;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -119,4 +122,21 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "--- destory ---");
+        MenuPreferenceWriter writer = new MenuPreferenceWriter(this,items);
+        try {
+            writer.work();
+        } catch (JSONException e) {
+            Log.i(TAG, "---destory cannot write into shared preference with json format---q");
+        }
+    }
 }
