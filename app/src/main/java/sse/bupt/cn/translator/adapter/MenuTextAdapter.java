@@ -19,13 +19,10 @@ public class MenuTextAdapter extends BaseAdapter {
 
     private List<MenuItem> items;
 
-    private Context context;
-
     private LayoutInflater inflater;
 
     public MenuTextAdapter(List<MenuItem> items, Context context) {
         this.items = items;
-        this.context = context;
         inflater = LayoutInflater.from(context);
     }
 
@@ -52,11 +49,10 @@ public class MenuTextAdapter extends BaseAdapter {
         MenuItemHolder holder;
         if (convertView == null) {
             holder = new MenuItemHolder();
-            convertView = LayoutInflater.from(context).
-                    inflate(R.layout.menu_items, parent, false);
+            convertView = inflater.inflate(R.layout.menu_items, parent, false);
 
-            holder.imageView = (ImageView) convertView.findViewById(R.id.imageView);
-            holder.textView = (TextView) convertView.findViewById(R.id.textView);
+            holder.imageView = convertView.findViewById(R.id.imageView);
+            holder.textView = convertView.findViewById(R.id.textView);
             convertView.setTag(holder);
         } else {
             holder = (MenuItemHolder) convertView.getTag();
