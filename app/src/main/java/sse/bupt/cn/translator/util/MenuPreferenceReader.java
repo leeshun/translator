@@ -19,8 +19,6 @@ public class MenuPreferenceReader {
 
     private SharedPreferences preferences;
 
-    private Context context;
-
     private List<MenuItem> items;
 
 
@@ -41,9 +39,9 @@ public class MenuPreferenceReader {
 
     private void initialize() throws JSONException {
         Log.i(TAG, "---initialize---");
-        String rawInternt = preferences.getString("menu", "");
+        String rawIntent = preferences.getString("menu", "");
 
-        JSONObject itemObject = new JSONObject(rawInternt);
+        JSONObject itemObject = new JSONObject(rawIntent);
 
         JSONArray itemArray = itemObject.getJSONArray("items");
         int size = itemArray.length();
