@@ -45,8 +45,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         initialize();
-
-        requestHandler.sendGetRequest(UrlConstant.GETMENUS, itemHandler);
     }
 
     private void initialize() {
@@ -67,14 +65,16 @@ public class MainActivity extends AppCompatActivity {
         //get items from the internet
         if (preferenceItems == null || preferenceItems.isEmpty()) {
             requestHandler = new StringRequestWrapper(this);
+            requestHandler.sendGetRequest(UrlConstant.GETMENUS, itemHandler);
+        } else {
+            //clear previous items
+            int size = items.size();
+            for (int index = 0; index < size; index++) {
+                items.remove(index);
+            }
+            items.addAll(preferenceItems);
+            adapter.notifyDataSetChanged();
         }
-        //clear previous items
-        int size = items.size();
-        for (int index = 0; index < size; index++) {
-            items.remove(index);
-        }
-        items.addAll(preferenceItems);
-        adapter.notifyDataSetChanged();
     }
 
     private void initializeListView() {
@@ -132,11 +132,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.i(TAG, "--- destory ---");
-        MenuPreferenceWriter writer = new MenuPreferenceWriter(this,items);
-        try {
+        MenuPreferenceWriter writer = new MenuPreferenceWriter(this, items);
+        writer.deletePreference();
+        /*try {
             writer.work();
         } catch (JSONException e) {
             Log.i(TAG, "---destory cannot write into shared preference with json format---q");
-        }
+        }*/
     }
 }

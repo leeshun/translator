@@ -50,7 +50,11 @@ public class MenuPreferenceReader {
             MenuItem item = new MenuItem();
             object = itemArray.getJSONObject(index);
             item.setMenuName(object.getString("articleName"));
-            item.setPath(object.getString("articlePath"));
+            if (object.getString("articlePath").equals("null")) {
+                item.setPath("");
+            } else {
+                item.setPath(object.getString("articlePath"));
+            }
             item.setLastViewPages(object.getInt("lastViewPages"));
             item.setLastViewTime(new Date(object.getString("lastViewTime")));
             Log.i(TAG, "---initialize the " + index + " item,which is " + item.toString() + "---");
