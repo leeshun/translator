@@ -11,6 +11,7 @@ import android.widget.ListView;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import sse.bupt.cn.translator.R;
@@ -22,6 +23,7 @@ import sse.bupt.cn.translator.network.StringRequestWrapper;
 import sse.bupt.cn.translator.responsehandler.MenuItemHandler;
 import sse.bupt.cn.translator.util.MenuPreferenceReader;
 import sse.bupt.cn.translator.util.MenuPreferenceWriter;
+import sse.bupt.cn.translator.util.TextInfoHolder;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -37,8 +39,6 @@ public class MainActivity extends AppCompatActivity {
     private List<MenuItem> items;
 
     private MenuTextAdapter adapter;
-
-    private ListView menuview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,9 +78,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeListView() {
-        menuview = findViewById(R.id.menu_list_view);
+        ListView menuView = findViewById(R.id.menu_list_view);
         initializeAdapter();
-        menuview.setAdapter(adapter);
+        menuView.setAdapter(adapter);
     }
 
 
@@ -124,14 +124,22 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
+    protected void onResume() {
+        Log.i(TAG, "--- resume ----");
+        super.onResume();
+        Log.i(TAG, "---start receive information---");
+        int position = TextInfoHolder.getIndex();
+        items.get(position).setLastViewPages(TextInfoHolder.getLastViewPages());
+        items.get(position).setLastViewTime(TextInfoHolder.getLastViewTime());
+        Log.i(TAG, "---end receive information---");
+        Collections.sort(items);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i(TAG, "--- destory ---");
+        Log.i(TAG, "--- destroy ---");
         MenuPreferenceWriter writer = new MenuPreferenceWriter(this, items);
         writer.deletePreference();
         /*try {
