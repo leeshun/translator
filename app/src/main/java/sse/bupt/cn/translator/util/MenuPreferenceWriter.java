@@ -25,6 +25,12 @@ public class MenuPreferenceWriter {
         this.items = items;
     }
 
+    public void deletePreference() {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.commit();
+    }
+
     public void work() throws JSONException {
         JSONObject root = new JSONObject();
 
@@ -32,10 +38,16 @@ public class MenuPreferenceWriter {
 
         int size = items.size();
 
+        items.get(0).setMenuName("test for read");
+
         for (int index = 0; index < size; index++) {
             JSONObject object = new JSONObject();
             object.put("articleName", items.get(index).getMenuName());
-            object.put("articlePath", items.get(index).getPath());
+            if (items.get(index).getPath() == null || items.get(index).getPath().equals("")) {
+                object.put("articlePath", "null");
+            } else {
+                object.put("articlePath", items.get(index).getPath());
+            }
             object.put("lastViewPages", items.get(index).getLastViewPages());
             object.put("lastViewTime", items.get(index).getLastViewTime());
             jsonItems.put(index, object);
