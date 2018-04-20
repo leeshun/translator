@@ -59,10 +59,10 @@ public class MainActivity extends AppCompatActivity {
 
         preferenceReader = new MenuPreferenceReader(this);
 
-        List<MenuItem> preferemceItems = preferenceReader.getItems();
+        List<MenuItem> preferenceItems = preferenceReader.getItems();
 
         //get items from the internet
-        if (preferemceItems == null || preferemceItems.isEmpty()) {
+        if (preferenceItems == null || preferenceItems.isEmpty()) {
             requestHandler = new StringRequestWrapper(this);
         }
         //clear previous items
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         for (int index = 0; index < size; index++) {
             items.remove(index);
         }
-        items.addAll(preferemceItems);
+        items.addAll(preferenceItems);
         adapter.notifyDataSetChanged();
     }
 
