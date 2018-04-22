@@ -7,10 +7,10 @@ public class UrlConstant {
 
     public static final String GETTEXTS = "http://" + REMOTEADDRESS + "/getText";
 
-    public static final String GETIMAGE = "http://" + REMOTEADDRESS + "/getImage";
+    public static final String GETIMAGE = "http://" + REMOTEADDRESS + "/image";
 
-    public static final String GETCHINESETEXT = "http://" + REMOTEADDRESS + "/getChinese";
+    public static final String GETCHINESETEXT = "http://" + REMOTEADDRESS + "/getChineseText";
 
-    public static final String UPDATECHINESETEXT = "http://" + REMOTEADDRESS + "/updateChinese";
+    public static final String UPDATECHINESETEXT = "http://" + REMOTEADDRESS + "/updateChineseText";
 
 }

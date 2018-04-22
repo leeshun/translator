@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.util.Log;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import sse.bupt.cn.translator.R;
 import sse.bupt.cn.translator.constants.UrlConstant;
@@ -67,9 +69,11 @@ public class TextActivity extends AppCompatActivity {
             Log.i(TAG, "--- text is null ---");
             isFromInternet = true;
             Log.i(TAG, "--- get text from the internet ---");
+            Map<String, String> params = new HashMap<>();
+            params.put("articleName", path);
             TextHandler textHandler = new TextHandler(handler);
             StringRequestWrapper request = new StringRequestWrapper(this);
-            request.sendGetRequest(UrlConstant.GETTEXTS, textHandler);
+            request.sendPostRequest(UrlConstant.GETTEXTS, textHandler, params);
         }
     }
 

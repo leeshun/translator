@@ -1,14 +1,16 @@
 package sse.bupt.cn.translator.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
     private List<MenuItem> items;
 
     private MenuTextAdapter adapter;
+
+    private int index;
+    private int page;
+    private String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +87,16 @@ public class MainActivity extends AppCompatActivity {
         ListView menuView = findViewById(R.id.menu_list_view);
         initializeAdapter();
         menuView.setAdapter(adapter);
+
+        menuView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                index = position;
+                name = items.get(position).getMenuName();
+                page = items.get(position).getLastViewPages();
+                startTextActivity();
+            }
+        });
     }
 
 
@@ -123,14 +139,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void startTextActivity() {
+        Intent intent = new Intent(this, TextActivity.class);
+        intent.putExtra("position", index);
+        intent.putExtra("path", name);
+        intent.putExtra("lastViewPages", page);
+        startActivity(intent);
+    }
+
+
     @Override
     protected void onResume() {
         Log.i(TAG, "--- resume ----");
         super.onResume();
         Log.i(TAG, "---start receive information---");
         int position = TextInfoHolder.getIndex();
-        items.get(position).setLastViewPages(TextInfoHolder.getLastViewPages());
-        items.get(position).setLastViewTime(TextInfoHolder.getLastViewTime());
+        if (items == null || items.isEmpty()) {
+            Log.i(TAG, "---items is a null pointer---");
+        } else {
+            items.get(position).setLastViewPages(TextInfoHolder.getLastViewPages());
+            items.get(position).setLastViewTime(TextInfoHolder.getLastViewTime());
+        }
         Log.i(TAG, "---end receive information---");
         Collections.sort(items);
         adapter.notifyDataSetChanged();

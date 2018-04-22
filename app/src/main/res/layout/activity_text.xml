@@ -25,6 +25,6 @@
             android:id="@+id/english_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="null"/>
+            android:divider="@null"/>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
