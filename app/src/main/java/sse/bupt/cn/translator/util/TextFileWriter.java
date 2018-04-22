@@ -1,5 +1,7 @@
 package sse.bupt.cn.translator.util;
 
+import android.content.Context;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -23,10 +25,13 @@ public class TextFileWriter implements Runnable {
 
     private Handler handler;
 
-    public TextFileWriter(String path, List<Text> texts, Handler handler) {
+    private Context context;
+
+    public TextFileWriter(String path, List<Text> texts, Handler handler, Context context) {
         this.path = path;
         this.texts = texts;
         this.handler = handler;
+        this.context = context;
     }
 
     public void start() {
@@ -37,7 +42,7 @@ public class TextFileWriter implements Runnable {
     public void run() {
         ObjectOutput out;
         try {
-            out = new ObjectOutputStream(new FileOutputStream(path));
+            out = new ObjectOutputStream(context.openFileOutput(path, Context.MODE_PRIVATE));
             if (texts == null) {
                 Log.i(TAG, "---text is null---");
                 return;
@@ -45,13 +50,14 @@ public class TextFileWriter implements Runnable {
             int size = texts.size();
             for (int index = 0; index < size; ++index) {
                 out.writeObject(texts.get(index));
+                Log.i(TAG, "---write object to file " + texts.get(index).toString() + "---");
             }
             out.flush();
             out.close();
             Message message = MessageFactory.getMessage(MessageType.TEXT_WRITE_SUCCESS);
             handler.sendMessage(message);
         } catch (FileNotFoundException e) {
-            Log.i(TAG, "---file:" + path + "not found---");
+            Log.i(TAG, "---file:" + path + " not found---");
             Message message = MessageFactory.getMessage(MessageType.TEXT_FILE_WRITE_ERROR);
             handler.sendMessage(message);
         } catch (IOException e) {

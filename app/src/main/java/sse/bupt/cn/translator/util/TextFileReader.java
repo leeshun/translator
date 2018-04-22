@@ -1,5 +1,6 @@
 package sse.bupt.cn.translator.util;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -21,9 +22,12 @@ public class TextFileReader implements Runnable {
 
     private Handler handler;
 
-    public TextFileReader(String path, Handler handler) {
+    private Context context;
+
+    public TextFileReader(String path, Handler handler,Context context) {
         this.path = path;
         this.handler = handler;
+        this.context = context;
     }
 
     public void start() {
@@ -36,9 +40,10 @@ public class TextFileReader implements Runnable {
 
         ObjectInput in;
         try {
-            in = new ObjectInputStream(new FileInputStream(path));
+            in = new ObjectInputStream(context.openFileInput(path));
             Text text;
             while ((text = (Text) in.readObject()) != null) {
+                Log.i(TAG, "---read object from file " + text.toString() + "---");
                 texts.add(text);
             }
             Message message = MessageFactory.getMessage(MessageType.TEXT_READ_SUCCESS);

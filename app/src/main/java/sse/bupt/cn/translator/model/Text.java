@@ -89,4 +89,17 @@ public class Text implements Serializable {
     public void setPitcureLocalPath(String pitcureLocalPath) {
         this.pitcureLocalPath = pitcureLocalPath;
     }
+
+    @Override
+    public String toString() {
+        return "Text{" +
+                "paraId=" + paraId +
+                ", pictureUrl='" + pictureUrl + '\'' +
+                ", englishText='" + englishText.length() + '\'' +
+                ", chineseText='" + chineseText + '\'' +
+                ", isOnlyText=" + isOnlyText +
+                ", isLocate=" + isLocate +
+                ", pitcureLocalPath='" + pitcureLocalPath + '\'' +
+                '}';
+    }
 }

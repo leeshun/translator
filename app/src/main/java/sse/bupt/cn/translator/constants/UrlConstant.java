@@ -1,7 +1,7 @@
 package sse.bupt.cn.translator.constants;
 
 public class UrlConstant {
-    private static final String REMOTEADDRESS = "10.209.4.207:8080";
+    private static final String REMOTEADDRESS = "192.168.43.185:8080";
 
     public static final String GETMENUS = "http://" + REMOTEADDRESS + "/getMenu";
 
