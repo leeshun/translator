@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ListView;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -14,10 +15,12 @@ import java.util.List;
 import java.util.Map;
 
 import sse.bupt.cn.translator.R;
+import sse.bupt.cn.translator.constants.MessageType;
 import sse.bupt.cn.translator.constants.UrlConstant;
 import sse.bupt.cn.translator.model.Text;
 import sse.bupt.cn.translator.network.StringRequestWrapper;
 import sse.bupt.cn.translator.responsehandler.TextHandler;
+import sse.bupt.cn.translator.util.TextFileReader;
 import sse.bupt.cn.translator.util.TextFileWriter;
 import sse.bupt.cn.translator.util.TextInfoHolder;
 
@@ -66,6 +69,8 @@ public class TextActivity extends AppCompatActivity {
         currentPages = intent.getIntExtra("lastViewPages", 0);
         texts = TextInfoHolder.getTexts();
         if (texts == null || texts.isEmpty()) {
+            TextFileReader reader  = new TextFileReader(path,handler,this);
+            reader.start();
             Log.i(TAG, "--- text is null ---");
             isFromInternet = true;
             Log.i(TAG, "--- get text from the internet ---");
@@ -83,7 +88,10 @@ public class TextActivity extends AppCompatActivity {
             public void handleMessage(Message msg) {
                 int type = msg.what;
                 switch (type) {
-
+                    case MessageType.TEXT_RESPONSE_SUCCESS:
+                        texts = (List<Text>) msg.obj;
+                        Log.i(TAG, "---message handler " + texts.size() + "---");
+                        break;
                 }
                 super.handleMessage(msg);
             }
@@ -95,7 +103,7 @@ public class TextActivity extends AppCompatActivity {
         Log.i(TAG, "--- pause ---");
         super.onPause();
         Log.i(TAG, "---start write---");
-        TextFileWriter writer = new TextFileWriter(path, texts, handler);
+        TextFileWriter writer = new TextFileWriter(path, texts, handler, this);
         writer.start();
         Log.i(TAG, "---start transfer information---");
         TextInfoHolder.setIndex(position);
