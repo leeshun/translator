@@ -38,7 +38,7 @@ public class StringRequestWrapper {
         StringFailHandler failHandler = new StringFailHandler(handler);
 
         Log.i(TAG, "---POST---start request " + url + "---");
-        StringRequest request = new StringRequest(Request.Method.GET, url, successHandler, failHandler) {
+        StringRequest request = new StringRequest(Request.Method.POST, url, successHandler, failHandler) {
             @Override
             protected Map<String, String> getParams() {
                 return body;

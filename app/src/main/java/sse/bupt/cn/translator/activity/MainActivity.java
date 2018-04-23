@@ -83,6 +83,15 @@ public class MainActivity extends AppCompatActivity {
                 items.remove(index);
             }
             items.addAll(preferenceItems);
+            Log.i(TAG, "---before---");
+            for (MenuItem each : items) {
+                Log.i(TAG, each.toString());
+            }
+            Collections.sort(items);
+            Log.i(TAG, "---end---");
+            for (MenuItem each : items) {
+                Log.i(TAG, each.toString());
+            }
             adapter.notifyDataSetChanged();
         }
     }
@@ -122,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
                         for (int index = 0; index < items.size(); index++) {
                             items.remove(index);
                         }
-
                         items.addAll(tmpItems);
                         adapter.notifyDataSetChanged();
                         for (MenuItem item : items) {

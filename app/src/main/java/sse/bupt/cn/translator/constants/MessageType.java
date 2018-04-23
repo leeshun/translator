@@ -2,6 +2,7 @@ package sse.bupt.cn.translator.constants;
 
 public class MessageType {
     //GetChineseHandler
+    public static final int GET_CHINESE_ERROR = 0;
     public static final int GET_CHINESE_TEXT_AND_SHOW_TO_ACTIVITY = 1;
 
     //SendChineseHandler

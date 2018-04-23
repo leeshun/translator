@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ import sse.bupt.cn.translator.constants.MessageType;
 import sse.bupt.cn.translator.constants.UrlConstant;
 import sse.bupt.cn.translator.model.Text;
 import sse.bupt.cn.translator.network.StringRequestWrapper;
+import sse.bupt.cn.translator.responsehandler.GetChineseHandler;
 import sse.bupt.cn.translator.responsehandler.TextHandler;
 import sse.bupt.cn.translator.util.TextFileWriter;
 import sse.bupt.cn.translator.util.TextInfoHolder;
@@ -40,6 +42,10 @@ public class TextActivity extends AppCompatActivity {
     private EnglishTextAdapter englishAdapter;
 
     private Handler handler;
+
+    private TextView chineseView;
+
+    private int chineseIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +66,31 @@ public class TextActivity extends AppCompatActivity {
     }
 
     private void initializeComponent() {
-        TextView textView = findViewById(R.id.chinese_text_view);
-        textView.setVisibility(View.GONE);
+        chineseView = findViewById(R.id.chinese_text_view);
+        chineseView.setTextSize(20);
+        chineseView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chineseView.setVisibility(View.GONE);
+            }
+        });
+        chineseView.setVisibility(View.GONE);
         ListView textListView = findViewById(R.id.english_list_view);
-        englishAdapter = new EnglishTextAdapter(texts,this);
+        textListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (texts.get(position).getChineseText() == null || texts.get(position).getChineseText().equals("")) {
+                    StringRequestWrapper request = new StringRequestWrapper(TextActivity.this);
+                    GetChineseHandler chineseHandler = new GetChineseHandler(handler);
+                    Map<String, String> param = new HashMap<>();
+                    param.put("articleName", path);
+                    param.put("paraId", String.valueOf(texts.get(position).getParaId()));
+                    chineseIndex = texts.get(position).getParaId();
+                    request.sendGetRequest(UrlConstant.GETCHINESETEXT, chineseHandler, param);
+                }
+            }
+        });
+        englishAdapter = new EnglishTextAdapter(texts, this);
         textListView.setAdapter(englishAdapter);
     }
 
@@ -73,6 +100,7 @@ public class TextActivity extends AppCompatActivity {
         path = intent.getStringExtra("path".toLowerCase());
         currentPages = intent.getIntExtra("lastViewPages", 0);
         texts = TextInfoHolder.getTexts();
+        setTitle(path);
         if (texts == null || texts.isEmpty()) {
             Map<String, String> params = new HashMap<>();
             params.put("articleName", path);
@@ -104,7 +132,21 @@ public class TextActivity extends AppCompatActivity {
                     case MessageType.TEXT_REQUEST_INTERNET_ERROR:
                         Log.i(TAG, "text request internet error");
                         break;
-
+                    case MessageType.GET_CHINESE_ERROR:
+                        Log.i(TAG, "get chinese error");
+                        break;
+                    case MessageType.GET_CHINESE_TEXT_AND_SHOW_TO_ACTIVITY:
+                        Log.i(TAG, "---get chinese text---");
+                        String result = (String) msg.obj;
+                        if (result == null || result.equals("")) {
+                            Log.i(TAG, "---null message---");
+                            chineseView.setText(Text.makePara(chineseIndex, "目前暂时没有对应的中文翻译"));
+                        } else {
+                            Log.i(TAG, result);
+                            chineseView.setText(Text.makePara(chineseIndex, result));
+                        }
+                        chineseView.setVisibility(View.VISIBLE);
+                        break;
                 }
                 super.handleMessage(msg);
             }

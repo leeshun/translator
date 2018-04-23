@@ -7,6 +7,8 @@ import android.util.Log;
 import com.android.volley.VolleyError;
 
 
+import java.io.UnsupportedEncodingException;
+
 import sse.bupt.cn.translator.constants.MessageType;
 import sse.bupt.cn.translator.network.handler.StringRequestHandler;
 import sse.bupt.cn.translator.util.MessageFactory;
@@ -22,6 +24,11 @@ public class GetChineseHandler implements StringRequestHandler {
 
     @Override
     public void onSuccess(String response) {
+        try {
+            response = new String(response.getBytes("utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         Log.i(TAG, "---" + response + "---");
         Message message = MessageFactory.getMessage(MessageType.GET_CHINESE_TEXT_AND_SHOW_TO_ACTIVITY, response);
         handler.sendMessage(message);
@@ -29,6 +36,8 @@ public class GetChineseHandler implements StringRequestHandler {
 
     @Override
     public void onFail(VolleyError error) {
+        Message message = MessageFactory.getMessage(MessageType.GET_CHINESE_ERROR);
+        handler.sendMessage(message);
         Log.i(TAG, "---chinese text get error---");
     }
 }
