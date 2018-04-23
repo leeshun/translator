@@ -5,7 +5,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import java.io.EOFException;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
@@ -24,7 +26,7 @@ public class TextFileReader implements Runnable {
 
     private Context context;
 
-    public TextFileReader(String path, Handler handler,Context context) {
+    public TextFileReader(String path, Handler handler, Context context) {
         this.path = path;
         this.handler = handler;
         this.context = context;
@@ -41,21 +43,28 @@ public class TextFileReader implements Runnable {
         ObjectInput in;
         try {
             in = new ObjectInputStream(context.openFileInput(path));
+            Log.i(TAG, "---read path is " + path + "---");
             Text text;
             while ((text = (Text) in.readObject()) != null) {
-                Log.i(TAG, "---read object from file " + text.toString() + "---");
                 texts.add(text);
             }
+        } catch (FileNotFoundException e) {
+            Log.i(TAG, "---file not found---");
+            Message message = MessageFactory.getMessage(MessageType.TEXT_FILE_NOT_FOUND);
+            handler.sendMessage(message);
+        } catch (EOFException e) {
+            Log.i(TAG, "---read over---");
+            Log.i(TAG, "---read text size is " + texts.size() + "---");
             Message message = MessageFactory.getMessage(MessageType.TEXT_READ_SUCCESS);
             message.obj = texts;
             handler.sendMessage(message);
         } catch (IOException e) {
             Log.i(TAG, "---read path error---");
-            Message message = MessageFactory.getMessage(MessageType.TEXT_FILE_READ_ERROR,e.getMessage());
+            Message message = MessageFactory.getMessage(MessageType.TEXT_FILE_READ_ERROR, e.getMessage());
             handler.sendMessage(message);
         } catch (ClassNotFoundException e) {
             Log.i(TAG, "---class not found---");
-            Message message = MessageFactory.getMessage(MessageType.TEXT_CLASS_NOT_FOUND,e.getMessage());
+            Message message = MessageFactory.getMessage(MessageType.TEXT_CLASS_NOT_FOUND, e.getMessage());
             handler.sendMessage(message);
         }
     }

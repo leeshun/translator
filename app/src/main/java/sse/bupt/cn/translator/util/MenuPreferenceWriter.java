@@ -38,8 +38,6 @@ public class MenuPreferenceWriter {
 
         int size = items.size();
 
-        items.get(0).setMenuName("test for read");
-
         for (int index = 0; index < size; index++) {
             JSONObject object = new JSONObject();
             object.put("articleName", items.get(index).getMenuName());

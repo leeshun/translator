@@ -50,10 +50,10 @@ public class TextFileWriter implements Runnable {
             int size = texts.size();
             for (int index = 0; index < size; ++index) {
                 out.writeObject(texts.get(index));
-                Log.i(TAG, "---write object to file " + texts.get(index).toString() + "---");
             }
             out.flush();
             out.close();
+            Log.i(TAG, "---write size is " + texts.size() + "---");
             Message message = MessageFactory.getMessage(MessageType.TEXT_WRITE_SUCCESS);
             handler.sendMessage(message);
         } catch (FileNotFoundException e) {

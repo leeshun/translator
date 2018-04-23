@@ -12,6 +12,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,10 +23,12 @@ import sse.bupt.cn.translator.adapter.MenuTextAdapter;
 import sse.bupt.cn.translator.constants.MessageType;
 import sse.bupt.cn.translator.constants.UrlConstant;
 import sse.bupt.cn.translator.model.MenuItem;
+import sse.bupt.cn.translator.model.Text;
 import sse.bupt.cn.translator.network.StringRequestWrapper;
 import sse.bupt.cn.translator.responsehandler.MenuItemHandler;
 import sse.bupt.cn.translator.util.MenuPreferenceReader;
 import sse.bupt.cn.translator.util.MenuPreferenceWriter;
+import sse.bupt.cn.translator.util.TextFileReader;
 import sse.bupt.cn.translator.util.TextInfoHolder;
 
 public class MainActivity extends AppCompatActivity {
@@ -94,7 +98,8 @@ public class MainActivity extends AppCompatActivity {
                 index = position;
                 name = items.get(position).getMenuName();
                 page = items.get(position).getLastViewPages();
-                startTextActivity();
+                TextFileReader reader = new TextFileReader(name, handler, MainActivity.this);
+                reader.start();
             }
         });
     }
@@ -133,6 +138,27 @@ public class MainActivity extends AppCompatActivity {
                     case MessageType.MENU_REQUEST_INTERNET_ERROR:
                         Log.i(TAG, "menu request internet error");
                         break;
+                    case MessageType.TEXT_READ_SUCCESS:
+                        List<Text> texts = (List<Text>) msg.obj;
+                        Log.i(TAG, "---text read success, it's size is " + texts.size() + "---");
+                        TextInfoHolder.setTexts(texts);
+                        startTextActivity();
+                        break;
+                    case MessageType.TEXT_FILE_READ_ERROR:
+                        Log.i(TAG, "text file read error");
+                        TextInfoHolder.setTexts(new ArrayList<Text>());
+                        startTextActivity();
+                        break;
+                    case MessageType.TEXT_CLASS_NOT_FOUND:
+                        Log.i(TAG, "text class not found");
+                        TextInfoHolder.setTexts(new ArrayList<Text>());
+                        startTextActivity();
+                        break;
+                    case MessageType.TEXT_FILE_NOT_FOUND:
+                        Log.i(TAG, "text file not found");
+                        TextInfoHolder.setTexts(new ArrayList<Text>());
+                        startTextActivity();
+                        break;
                 }
             }
         };
@@ -170,11 +196,10 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         Log.i(TAG, "--- destroy ---");
         MenuPreferenceWriter writer = new MenuPreferenceWriter(this, items);
-        writer.deletePreference();
-        /*try {
+        try {
             writer.work();
         } catch (JSONException e) {
-            Log.i(TAG, "---destory cannot write into shared preference with json format---q");
-        }*/
+            Log.i(TAG, "---destory cannot write into shared preference with json format---");
+        }
     }
 }

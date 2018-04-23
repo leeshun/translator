@@ -7,7 +7,9 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -15,12 +17,12 @@ import java.util.List;
 import java.util.Map;
 
 import sse.bupt.cn.translator.R;
+import sse.bupt.cn.translator.adapter.EnglishTextAdapter;
 import sse.bupt.cn.translator.constants.MessageType;
 import sse.bupt.cn.translator.constants.UrlConstant;
 import sse.bupt.cn.translator.model.Text;
 import sse.bupt.cn.translator.network.StringRequestWrapper;
 import sse.bupt.cn.translator.responsehandler.TextHandler;
-import sse.bupt.cn.translator.util.TextFileReader;
 import sse.bupt.cn.translator.util.TextFileWriter;
 import sse.bupt.cn.translator.util.TextInfoHolder;
 
@@ -35,9 +37,9 @@ public class TextActivity extends AppCompatActivity {
 
     private int currentPages;
 
-    private Handler handler;
+    private EnglishTextAdapter englishAdapter;
 
-    private boolean isFromInternet;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,17 +51,20 @@ public class TextActivity extends AppCompatActivity {
 
 
     public void initialize() {
-        isFromInternet = false;
-        Log.i(TAG, "--- initialize handler ---");
+
         initializeHandler();
-        Log.i(TAG, "--- initialize intent information ---");
+
         initializeIntentInfo();
-        Log.i(TAG, "--- initialize activity view ---");
+
         initializeComponent();
     }
 
     private void initializeComponent() {
-        //TODO(leeshun) initialize activity view
+        TextView textView = findViewById(R.id.chinese_text_view);
+        textView.setVisibility(View.GONE);
+        ListView textListView = findViewById(R.id.english_list_view);
+        englishAdapter = new EnglishTextAdapter(texts,this);
+        textListView.setAdapter(englishAdapter);
     }
 
     private void initializeIntentInfo() {
@@ -69,16 +74,11 @@ public class TextActivity extends AppCompatActivity {
         currentPages = intent.getIntExtra("lastViewPages", 0);
         texts = TextInfoHolder.getTexts();
         if (texts == null || texts.isEmpty()) {
-            TextFileReader reader  = new TextFileReader(path,handler,this);
-            reader.start();
-            Log.i(TAG, "--- text is null ---");
-            isFromInternet = true;
-            Log.i(TAG, "--- get text from the internet ---");
             Map<String, String> params = new HashMap<>();
             params.put("articleName", path);
             TextHandler textHandler = new TextHandler(handler);
             StringRequestWrapper request = new StringRequestWrapper(this);
-            request.sendPostRequest(UrlConstant.GETTEXTS, textHandler, params);
+            request.sendGetRequest(UrlConstant.GETTEXTS, textHandler, params);
         }
     }
 
@@ -89,9 +89,22 @@ public class TextActivity extends AppCompatActivity {
                 int type = msg.what;
                 switch (type) {
                     case MessageType.TEXT_RESPONSE_SUCCESS:
-                        texts = (List<Text>) msg.obj;
+                        List<Text> tmp = (List<Text>) msg.obj;
+                        texts.clear();
+                        texts.addAll(tmp);
+                        englishAdapter.notifyDataSetChanged();
                         Log.i(TAG, "---message handler " + texts.size() + "---");
                         break;
+                    case MessageType.TEXT_RESPONSE_DO_NOT_CONTAIN_JSON_OBJECT:
+                        Log.i(TAG, "text response do not contain json object");
+                        break;
+                    case MessageType.TEXT_RESPONSE_PARSE_ERROR:
+                        Log.i(TAG, "text response parse error");
+                        break;
+                    case MessageType.TEXT_REQUEST_INTERNET_ERROR:
+                        Log.i(TAG, "text request internet error");
+                        break;
+
                 }
                 super.handleMessage(msg);
             }

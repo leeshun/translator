@@ -33,12 +33,12 @@ public class StringRequestWrapper {
         queue.add(request);
     }
 
-    public void sendPostRequest(String url, StringRequestHandler handler, final Map<String, String> body) {
+    public void sendGetRequest(String url, StringRequestHandler handler, final Map<String, String> body) {
         StringSuccessHandler successHandler = new StringSuccessHandler(handler);
         StringFailHandler failHandler = new StringFailHandler(handler);
 
         Log.i(TAG, "---POST---start request " + url + "---");
-        StringRequest request = new StringRequest(Request.Method.POST, url, successHandler, failHandler) {
+        StringRequest request = new StringRequest(Request.Method.GET, url, successHandler, failHandler) {
             @Override
             protected Map<String, String> getParams() {
                 return body;

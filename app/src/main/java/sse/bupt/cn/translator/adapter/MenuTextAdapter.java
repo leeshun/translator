@@ -28,19 +28,16 @@ public class MenuTextAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        Log.i(TAG, "---count is " + items.size() + "---");
         return items.size();
     }
 
     @Override
     public Object getItem(int position) {
-        Log.i(TAG, "---get item is " + items.get(position).toString() + "---");
         return items.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        Log.i(TAG, "---position is " + position + "---");
         return position;
     }
 
@@ -61,10 +58,6 @@ public class MenuTextAdapter extends BaseAdapter {
         holder.textView.setText(items.get(position).getMenuName());
 
         return convertView;
-    }
-
-    public void filter(String filter) {
-        notifyDataSetChanged();
     }
 
     private class MenuItemHolder {

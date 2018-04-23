@@ -28,8 +28,9 @@ public class MessageType {
     public static final int TEXT_READ_SUCCESS = 14;
     public static final int TEXT_FILE_READ_ERROR = 15;
     public static final int TEXT_CLASS_NOT_FOUND = 16;
+    public static final int TEXT_FILE_NOT_FOUND = 17;
 
     //TextFileWriter
-    public static final int TEXT_WRITE_SUCCESS = 17;
-    public static final int TEXT_FILE_WRITE_ERROR = 18;
+    public static final int TEXT_WRITE_SUCCESS = 18;
+    public static final int TEXT_FILE_WRITE_ERROR = 19;
 }

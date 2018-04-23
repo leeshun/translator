@@ -1,6 +1,9 @@
 package sse.bupt.cn.translator.model;
 
+import android.util.Log;
+
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 
 public class Text implements Serializable {
     private int paraId;
@@ -70,8 +73,9 @@ public class Text implements Serializable {
         return isOnlyText;
     }
 
-    public static String makePara(String value) {
-        return "  " + value;
+    public static String makePara(int paraIndex, String value) {
+        String result = paraIndex + "   " + value;
+        return result;
     }
 
     public boolean isLocate() {

@@ -53,6 +53,7 @@ public class TextHandler implements StringRequestHandler {
                 text.setChineseText(object.getString("chinese"));
                 texts.add(text);
             }
+            Log.i(TAG, texts.get(0).getEnglishText());
             Log.i(TAG, "---read text success from internet " + texts.size() + "---");
             Message message = MessageFactory.getMessage(MessageType.TEXT_RESPONSE_SUCCESS);
             message.obj = texts;
