@@ -27,7 +27,9 @@ public class EnglishTextAdapter extends BaseAdapter {
 
     public EnglishTextAdapter(List<Text> texts, Context context) {
         this.texts = texts;
-        Fresco.initialize(context);
+        if (!Fresco.hasBeenInitialized()) {
+            Fresco.initialize(context);
+        }
         inflater = LayoutInflater.from(context);
     }
 
