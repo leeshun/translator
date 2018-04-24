@@ -49,6 +49,7 @@ public class TextFileWriter implements Runnable {
             }
             int size = texts.size();
             for (int index = 0; index < size; ++index) {
+                Log.i(TAG, texts.get(index).getChineseText());
                 out.writeObject(texts.get(index));
             }
             out.flush();

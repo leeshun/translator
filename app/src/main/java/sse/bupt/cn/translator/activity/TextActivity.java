@@ -12,6 +12,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -75,7 +77,7 @@ public class TextActivity extends AppCompatActivity {
             }
         });
         chineseView.setVisibility(View.GONE);
-        ListView textListView = findViewById(R.id.english_list_view);
+        final ListView textListView = findViewById(R.id.english_list_view);
         textListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -87,6 +89,9 @@ public class TextActivity extends AppCompatActivity {
                     param.put("paraId", String.valueOf(texts.get(position).getParaId()));
                     chineseIndex = texts.get(position).getParaId();
                     request.sendGetRequest(UrlConstant.GETCHINESETEXT, chineseHandler, param);
+                } else {
+                    chineseView.setText(texts.get(position).getChineseText());
+                    chineseView.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -143,6 +148,7 @@ public class TextActivity extends AppCompatActivity {
                             chineseView.setText(Text.makePara(chineseIndex, "目前暂时没有对应的中文翻译"));
                         } else {
                             Log.i(TAG, result);
+                            texts.get(chineseIndex - 1).setChineseText(result);
                             chineseView.setText(Text.makePara(chineseIndex, result));
                         }
                         chineseView.setVisibility(View.VISIBLE);
@@ -155,15 +161,11 @@ public class TextActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        Log.i(TAG, "--- pause ---");
         super.onPause();
-        Log.i(TAG, "---start write---");
         TextFileWriter writer = new TextFileWriter(path, texts, handler, this);
         writer.start();
-        Log.i(TAG, "---start transfer information---");
         TextInfoHolder.setIndex(position);
         TextInfoHolder.setLastViewPages(currentPages);
         TextInfoHolder.setLastViewTime(Calendar.getInstance().getTime());
-        Log.i(TAG, "---end transfer information---");
     }
 }

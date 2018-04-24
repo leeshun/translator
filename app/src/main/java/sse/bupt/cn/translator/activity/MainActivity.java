@@ -83,15 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 items.remove(index);
             }
             items.addAll(preferenceItems);
-            Log.i(TAG, "---before---");
-            for (MenuItem each : items) {
-                Log.i(TAG, each.toString());
-            }
             Collections.sort(items);
-            Log.i(TAG, "---end---");
-            for (MenuItem each : items) {
-                Log.i(TAG, each.toString());
-            }
             adapter.notifyDataSetChanged();
         }
     }
@@ -184,9 +176,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        Log.i(TAG, "--- resume ----");
         super.onResume();
-        Log.i(TAG, "---start receive information---");
         int position = TextInfoHolder.getIndex();
         if (items == null || items.isEmpty()) {
             Log.i(TAG, "---items is a null pointer---");
@@ -194,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
             items.get(position).setLastViewPages(TextInfoHolder.getLastViewPages());
             items.get(position).setLastViewTime(TextInfoHolder.getLastViewTime());
         }
-        Log.i(TAG, "---end receive information---");
         Collections.sort(items);
         adapter.notifyDataSetChanged();
     }
@@ -202,12 +191,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i(TAG, "--- destroy ---");
         MenuPreferenceWriter writer = new MenuPreferenceWriter(this, items);
         try {
             writer.work();
         } catch (JSONException e) {
-            Log.i(TAG, "---destory cannot write into shared preference with json format---");
+            Log.i(TAG, "---destroy cannot write into shared preference with json format---");
         }
     }
 }
