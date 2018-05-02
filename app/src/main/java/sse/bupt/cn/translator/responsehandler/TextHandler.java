@@ -50,7 +50,7 @@ public class TextHandler implements StringRequestHandler {
                 text.setParaId(Integer.parseInt(object.getString("id")));
                 text.setPictureUrl(object.getString("url"));
                 text.setEnglishText(object.getString("english"));
-                text.setChineseText(object.getString("chinese"));
+                //text.setChineseText(object.getString("chinese"));
                 texts.add(text);
             }
             Log.i(TAG, "---read text success from internet " + texts.size() + "---");
