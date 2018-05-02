@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,8 @@ public class TextActivity extends AppCompatActivity {
     private static final String TAG = "TextActivity";
 
     private List<Text> texts;
+
+    private List<String> chineses;
 
     private String path;
 
@@ -72,6 +75,7 @@ public class TextActivity extends AppCompatActivity {
     }
 
     private void initializeComponent() {
+        chineseView = findViewById(R.id.chinese_list_view);
 //        chineseView = findViewById(R.id.chinese_text_view);
 //        chineseView.setTextSize(20);
 //        chineseView.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +85,9 @@ public class TextActivity extends AppCompatActivity {
 //            }
 //        });
 //        chineseView.setVisibility(View.GONE);
+        chineses = new ArrayList<>();
+        chineseTextAdapter = new ChineseTextAdapter(chineses, this);
+        chineseView.setAdapter(chineseTextAdapter);
         final ListView textListView = findViewById(R.id.english_list_view);
         textListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -95,6 +102,9 @@ public class TextActivity extends AppCompatActivity {
                     request.sendGetRequest(UrlConstant.GETCHINESETEXT, chineseHandler, param);
                 } else {
 //                    chineseView.setText(texts.get(position).getChineseText());
+                    chineses.clear();
+                    chineses.addAll(texts.get(position).getChineseText());
+                    chineseTextAdapter.notifyDataSetChanged();
                     chineseView.setVisibility(View.VISIBLE);
                 }
             }
@@ -146,13 +156,18 @@ public class TextActivity extends AppCompatActivity {
                         break;
                     case MessageType.GET_CHINESE_TEXT_AND_SHOW_TO_ACTIVITY:
                         Log.i(TAG, "---get chinese text---");
-                        String result = (String) msg.obj;
+                        List<String> result = (List<String>) msg.obj;
                         if (result == null || result.equals("")) {
                             Log.i(TAG, "---null message---");
+                            chineses.clear();
+                            chineses.add(Text.makePara(chineseIndex, "目前暂时没有对应的中文翻译"));
 //                            chineseView.setText(Text.makePara(chineseIndex, "目前暂时没有对应的中文翻译"));
                         } else {
-                            Log.i(TAG, result);
                             texts.get(chineseIndex - 1).setChineseText(result);
+                            chineses.clear();
+                            chineses.addAll(result);
+                            chineseTextAdapter.notifyDataSetChanged();
+//                            texts.get(chineseIndex - 1).setChineseText(result);
 //                            chineseView.setText(Text.makePara(chineseIndex, result));
                         }
                         chineseView.setVisibility(View.VISIBLE);

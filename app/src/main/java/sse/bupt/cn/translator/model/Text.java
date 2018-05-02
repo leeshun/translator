@@ -1,9 +1,7 @@
 package sse.bupt.cn.translator.model;
 
-import android.util.Log;
-
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 public class Text implements Serializable {
     private int paraId;
@@ -12,7 +10,7 @@ public class Text implements Serializable {
 
     private String englishText;
 
-    private String chineseText;
+    private List<String> chineseText;
 
     private boolean isOnlyText;
 
@@ -25,7 +23,7 @@ public class Text implements Serializable {
         isLocate = false;
     }
 
-    public Text(int paraId, String pictureUrl, String englishText, String chineseText, boolean isOnlyText) {
+    public Text(int paraId, String pictureUrl, String englishText, List<String> chineseText, boolean isOnlyText) {
         this.paraId = paraId;
         this.pictureUrl = pictureUrl;
         this.englishText = englishText;
@@ -61,11 +59,11 @@ public class Text implements Serializable {
         this.englishText = englishText;
     }
 
-    public String getChineseText() {
+    public List<String> getChineseText() {
         return chineseText;
     }
 
-    public void setChineseText(String chineseText) {
+    public void setChineseText(List<String> chineseText) {
         this.chineseText = chineseText;
     }
 
