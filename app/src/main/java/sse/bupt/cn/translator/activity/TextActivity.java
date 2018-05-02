@@ -1,18 +1,15 @@
 package sse.bupt.cn.translator.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
-
-import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -20,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import sse.bupt.cn.translator.R;
+import sse.bupt.cn.translator.adapter.ChineseTextAdapter;
 import sse.bupt.cn.translator.adapter.EnglishTextAdapter;
 import sse.bupt.cn.translator.constants.MessageType;
 import sse.bupt.cn.translator.constants.UrlConstant;
@@ -43,11 +41,16 @@ public class TextActivity extends AppCompatActivity {
 
     private EnglishTextAdapter englishAdapter;
 
+    private ChineseTextAdapter chineseTextAdapter;
+
+    private ListView chineseView;
+
     private Handler handler;
 
-    private TextView chineseView;
-
     private int chineseIndex;
+
+    private boolean isChineseList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,7 @@ public class TextActivity extends AppCompatActivity {
 
 
     public void initialize() {
+        isChineseList = false;
 
         initializeHandler();
 
@@ -68,15 +72,15 @@ public class TextActivity extends AppCompatActivity {
     }
 
     private void initializeComponent() {
-        chineseView = findViewById(R.id.chinese_text_view);
-        chineseView.setTextSize(20);
-        chineseView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chineseView.setVisibility(View.GONE);
-            }
-        });
-        chineseView.setVisibility(View.GONE);
+//        chineseView = findViewById(R.id.chinese_text_view);
+//        chineseView.setTextSize(20);
+//        chineseView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                chineseView.setVisibility(View.GONE);
+//            }
+//        });
+//        chineseView.setVisibility(View.GONE);
         final ListView textListView = findViewById(R.id.english_list_view);
         textListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -90,7 +94,7 @@ public class TextActivity extends AppCompatActivity {
                     chineseIndex = texts.get(position).getParaId();
                     request.sendGetRequest(UrlConstant.GETCHINESETEXT, chineseHandler, param);
                 } else {
-                    chineseView.setText(texts.get(position).getChineseText());
+//                    chineseView.setText(texts.get(position).getChineseText());
                     chineseView.setVisibility(View.VISIBLE);
                 }
             }
@@ -145,11 +149,11 @@ public class TextActivity extends AppCompatActivity {
                         String result = (String) msg.obj;
                         if (result == null || result.equals("")) {
                             Log.i(TAG, "---null message---");
-                            chineseView.setText(Text.makePara(chineseIndex, "目前暂时没有对应的中文翻译"));
+//                            chineseView.setText(Text.makePara(chineseIndex, "目前暂时没有对应的中文翻译"));
                         } else {
                             Log.i(TAG, result);
                             texts.get(chineseIndex - 1).setChineseText(result);
-                            chineseView.setText(Text.makePara(chineseIndex, result));
+//                            chineseView.setText(Text.makePara(chineseIndex, result));
                         }
                         chineseView.setVisibility(View.VISIBLE);
                         break;
@@ -167,5 +171,15 @@ public class TextActivity extends AppCompatActivity {
         TextInfoHolder.setIndex(position);
         TextInfoHolder.setLastViewPages(currentPages);
         TextInfoHolder.setLastViewTime(Calendar.getInstance().getTime());
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isChineseList) {
+            chineseView.setVisibility(View.GONE);
+            isChineseList = false;
+            return;
+        }
+        super.onBackPressed();
     }
 }

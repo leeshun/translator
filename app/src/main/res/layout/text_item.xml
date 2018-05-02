@@ -12,9 +12,9 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/text_image_view"
-        android:layout_gravity="center"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_weight="0.15" />
 
     <TextView
