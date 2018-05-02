@@ -8,6 +8,8 @@ import com.android.volley.VolleyError;
 
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 import sse.bupt.cn.translator.constants.MessageType;
 import sse.bupt.cn.translator.network.handler.StringRequestHandler;
@@ -30,7 +32,10 @@ public class GetChineseHandler implements StringRequestHandler {
             e.printStackTrace();
         }
         Log.i(TAG, "---" + response + "---");
-        Message message = MessageFactory.getMessage(MessageType.GET_CHINESE_TEXT_AND_SHOW_TO_ACTIVITY, response);
+        List<String> result = new ArrayList<>();
+        //TODO(leeshun) parse json string here
+        Message message = MessageFactory.getMessage(MessageType.GET_CHINESE_TEXT_AND_SHOW_TO_ACTIVITY);
+        message.obj = result;
         handler.sendMessage(message);
     }
 
